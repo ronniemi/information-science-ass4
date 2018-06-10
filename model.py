@@ -63,4 +63,4 @@ def k_means(num_of_clusters, num_of_runs):
     #except:
     #    raise ValueError('pre processed file not exist')
 
-def plot_scatter(df, num_of_cluster):
+#def plot_scatter(df, num_of_cluster):
