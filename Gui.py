@@ -52,14 +52,9 @@ class Gui(tk.Frame):
     def run(self):
         self.mainloop()
 
-<<<<<<< HEAD
     def brows_file(self):
         self.file_path_val = askopenfilename(filetypes=[("Excel files", "*.xlsx")])
         self.file_path.insert(0, self.file_path_val)
 
 app = Gui(tk.Tk())
 app.run()
-=======
-# app = Gui(tk.Tk())
-# app.run()
->>>>>>> 67686e06ae87bb24d49539f63622263637cea31d
