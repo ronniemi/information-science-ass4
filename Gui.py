@@ -48,7 +48,7 @@ class Gui(tk.Frame):
         self.pre_process.grid(row=3)
 
         # The cluster button
-        self.cluster = tk.Button(self, text='Cluster', command=master.quit)
+        self.cluster = tk.Button(self, text='Cluster', command=self.build_model)
         self.cluster.grid(row=3, column=1)
 
     def run(self):
@@ -67,10 +67,13 @@ class Gui(tk.Frame):
 
     def build_model(self):
         try:
-            if(self.Num_of_runs_val < 1):
+            num_of_runs = self.Num_of_runs_val.get()
+            num_of_clusters = self.Num_of_clusters_val.get()
+            if(num_of_runs < 1):
                 tkMessageBox.showerror("K Means Clustering", 'invalid number of runs')
-            if (self.Num_of_clusters_val < 2):
-                tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 2')
+            if (num_of_clusters < 2):
+                tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 1')
+            model.k_means(num_of_clusters, num_of_runs)
         except ValueError as ve:
             tkMessageBox.showerror("K Means Clustering", ve.message)
 
