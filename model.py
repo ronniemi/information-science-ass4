@@ -1,9 +1,7 @@
 import pandas as pd
-import numpy as np
 from sklearn import preprocessing
 import os.path
 from sklearn.cluster import KMeans
-from random import randint
 import matplotlib.pyplot as plt
 import plotly.plotly as py
 
@@ -57,7 +55,6 @@ def pre_process(path):
 def k_means(num_of_clusters, num_of_runs):
     global countries
     try:
-        #countries = data_after_pre_procsess['country']
         countries = data_after_pre_procsess['country']
         data_after_pre_procsess.index = data_after_pre_procsess['country']
         data_after_pre_procsess.drop(['country'], inplace=True, axis=1)
@@ -79,13 +76,14 @@ def plot_scatter():
     plt.show()
 
 def plot_map():
-    # Define the data to be visualised and some of the parameters of the visualisation
 
+    # Define the data to be visualised and some of the parameters of the visualisation
     data = [dict(
         type='choropleth',
         locations=countries,
+        locationmode='country names',
         z=data_after_pre_procsess['prediction'].astype(str),
-        text=countries,
+        text=countries.astype(str),
         colorscale= 'Rainbow',
         autocolorscale=False,
         reversescale=True,
@@ -113,4 +111,4 @@ def plot_map():
     # Plot
     fig = dict(data=data, layout=layout)
     py.sign_in(username='amitmag', api_key='UzC0vg747jN3LLGYMgJc')
-    py.image.save_as(fig, filename='map.png')
+    py.image.save_as(fig ,filename= directory_path + '/map_img.png')
