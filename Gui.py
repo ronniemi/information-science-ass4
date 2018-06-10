@@ -75,6 +75,7 @@ class Gui(tk.Frame):
                 tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 1')
             model.k_means(num_of_clusters, num_of_runs)
             model.plot_scatter()
+            model.plot_map()
         except ValueError as ve:
             tkMessageBox.showerror("K Means Clustering", ve.message)
 

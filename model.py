@@ -5,10 +5,12 @@ import os.path
 from sklearn.cluster import KMeans
 from random import randint
 import matplotlib.pyplot as plt
+import plotly.plotly as py
 
 directory_path = ""
 
 data_after_pre_procsess = pd.DataFrame()
+countries = pd.DataFrame()
 
 def read_file(path):
     df = pd.read_excel(path)
@@ -52,14 +54,11 @@ def pre_process(path):
     #pre_processed_file_path = directory_path + '/pre_processed_data.csv'
     #df.to_csv(pre_processed_file_path, index=False)
 
-def generate_colors(list_size):
-    colors = []
-    for i in range(list_size):
-        colors.append('%06X' % randint(0, 0xFFFFFF))
-    return colors
-
 def k_means(num_of_clusters, num_of_runs):
+    global countries
     try:
+        #countries = data_after_pre_procsess['country']
+        countries = data_after_pre_procsess['country']
         data_after_pre_procsess.index = data_after_pre_procsess['country']
         data_after_pre_procsess.drop(['country'], inplace=True, axis=1)
 
@@ -78,3 +77,40 @@ def plot_scatter():
     plt.xlabel('Social support')
     plt.ylabel('Generosity')
     plt.show()
+
+def plot_map():
+    # Define the data to be visualised and some of the parameters of the visualisation
+
+    data = [dict(
+        type='choropleth',
+        locations=countries,
+        z=data_after_pre_procsess['prediction'].astype(str),
+        text=countries,
+        colorscale= 'Rainbow',
+        autocolorscale=False,
+        reversescale=True,
+        marker=dict(
+            line=dict(
+                color='rgb(180,180,180)',
+                width=0.5
+            )),
+        colorbar=dict(
+            autotick=False,
+            title='prediction'),
+    )]
+
+    layout = dict(
+        title='K Means Clustering',
+        geo=dict(
+            showframe=True,
+            showcoastlines=True,
+            projection=dict(
+                type='Mercator'
+            )
+        )
+    )
+
+    # Plot
+    fig = dict(data=data, layout=layout)
+    py.sign_in(username='amitmag', api_key='UzC0vg747jN3LLGYMgJc')
+    py.image.save_as(fig, filename='map.png')
