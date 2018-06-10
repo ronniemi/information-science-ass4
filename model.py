@@ -3,6 +3,8 @@ import numpy as np
 from sklearn import preprocessing
 import os.path
 from sklearn.cluster import KMeans
+from random import randint
+import matplotlib.pyplot as plt
 
 directory_path = ""
 
@@ -50,17 +52,29 @@ def pre_process(path):
     #pre_processed_file_path = directory_path + '/pre_processed_data.csv'
     #df.to_csv(pre_processed_file_path, index=False)
 
+def generate_colors(list_size):
+    colors = []
+    for i in range(list_size):
+        colors.append('%06X' % randint(0, 0xFFFFFF))
+    return colors
+
 def k_means(num_of_clusters, num_of_runs):
-    #try:
-    pre_processed_data = data_after_pre_procsess #pd.read_csv(pre_processed_file_path)
-    pre_processed_data.index = pre_processed_data['country']
-    pre_processed_data.drop(['country'], inplace=True, axis=1)
+    try:
+        data_after_pre_procsess.index = data_after_pre_procsess['country']
+        data_after_pre_procsess.drop(['country'], inplace=True, axis=1)
 
-    k_means_model = KMeans(n_clusters=num_of_clusters, init='random', n_init=num_of_runs)
-    k_means_model.fit(pre_processed_data)
+        k_means_model = KMeans(n_clusters=num_of_clusters, init='random', n_init=num_of_runs)
+        k_means_model.fit(data_after_pre_procsess)
 
-    pre_processed_data['prediction'] = k_means_model.labels_
-    #except:
-    #    raise ValueError('pre processed file not exist')
+        data_after_pre_procsess['prediction'] = k_means_model.labels_
+    except:
+        raise ValueError('pre processed file not exist')
 
-#def plot_scatter(df, num_of_cluster):
+def plot_scatter():
+    x = data_after_pre_procsess['Social support']
+    y = data_after_pre_procsess['Generosity']
+    plt.scatter(x, y ,c=data_after_pre_procsess['prediction'], alpha=0.5)
+    plt.title('K Means Clustering')
+    plt.xlabel('Social support')
+    plt.ylabel('Generosity')
+    plt.show()
