@@ -1,5 +1,7 @@
 import Tkinter as tk
 from tkFileDialog import askopenfilename
+import tkMessageBox
+import model
 
 class Gui(tk.Frame):
 
@@ -7,7 +9,7 @@ class Gui(tk.Frame):
         # Initialize window using the parent's constructor
         tk.Frame.__init__(self, master, width=500, height=500)
         # Set the title
-        self.master.title('Clustering Model')
+        self.master.title('"K Means Clustering"')
 
         # This allows the size specification to take effect
         self.pack_propagate(0)
@@ -42,7 +44,7 @@ class Gui(tk.Frame):
         self.Num_of_clusters_val.set(2)
 
         # The pre_process button
-        self.pre_process = tk.Button(self, text='Pre-process', command=master.quit)
+        self.pre_process = tk.Button(self, text='Pre-process', command=self.pre_process)
         self.pre_process.grid(row=3)
 
         # The cluster button
@@ -53,8 +55,24 @@ class Gui(tk.Frame):
         self.mainloop()
 
     def brows_file(self):
-        self.file_path_val = askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+        self.file_path_val = askopenfilename(title='K Means Clustering', filetypes=[("Excel files", "*.xlsx")])
         self.file_path.insert(0, self.file_path_val)
+
+    def pre_process(self):
+        try:
+            model.pre_process(self.file_path_val)
+            tkMessageBox.showinfo("K Means Clustering", "Preprocessing complited successfully")
+        except ValueError as ve:
+            tkMessageBox.showerror("K Means Clustering", ve.message)
+
+    def build_model(self):
+        try:
+            if(self.Num_of_runs_val < 1):
+                tkMessageBox.showerror("K Means Clustering", 'invalid number of runs')
+            if (self.Num_of_clusters_val < 2):
+                tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 2')
+        except ValueError as ve:
+            tkMessageBox.showerror("K Means Clustering", ve.message)
 
 app = Gui(tk.Tk())
 app.run()
