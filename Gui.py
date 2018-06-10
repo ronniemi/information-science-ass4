@@ -27,5 +27,5 @@ class Gui(tk.Frame):
     def run(self):
         self.mainloop()
 
-app = Gui(tk.Tk())
-app.run()
+# app = Gui(tk.Tk())
+# app.run()
