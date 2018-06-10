@@ -37,27 +37,30 @@ def clean_data(df):
     df = data_grouping(df)
     return df
 
+def pre_process(path):
+    global directory_path
+    global data_after_pre_procsess
+
+    df = read_file(path)
+    df = clean_data(df)
+
+    directory_path = os.path.abspath(os.path.join(path, os.pardir))
+    data_after_pre_procsess = df
+
+    #pre_processed_file_path = directory_path + '/pre_processed_data.csv'
+    #df.to_csv(pre_processed_file_path, index=False)
+
 def k_means(num_of_clusters, num_of_runs):
     #try:
     pre_processed_data = data_after_pre_procsess #pd.read_csv(pre_processed_file_path)
-    #pre_processed_data.index = pre_processed_data['country']
-    #pre_processed_data.drop(['country'], inplace=True, axis=1)
-    print(pre_processed_data)
+    pre_processed_data.index = pre_processed_data['country']
+    pre_processed_data.drop(['country'], inplace=True, axis=1)
 
     k_means_model = KMeans(n_clusters=num_of_clusters, init='random', n_init=num_of_runs)
     k_means_model.fit(pre_processed_data)
 
     pre_processed_data['prediction'] = k_means_model.labels_
-    print(pre_processed_data)
-    #pre_processed_data.to_csv(r"d:\documents\users\ronniemi\Downloads\Assignment4\final.csv", index=False)
     #except:
     #    raise ValueError('pre processed file not exist')
 
-def pre_process(path):
-    df = read_file(path)
-    df = clean_data(df)
-    directory_path = os.path.abspath(os.path.join(path, os.pardir))
-    data_after_pre_procsess = df
-    print(data_after_pre_procsess)
-    #pre_processed_file_path = directory_path + '/pre_processed_data.csv'
-    #df.to_csv(pre_processed_file_path, index=False)
+def plot_scatter(df, num_of_cluster):
