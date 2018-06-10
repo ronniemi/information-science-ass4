@@ -2,6 +2,7 @@ import Tkinter as tk
 from tkFileDialog import askopenfilename
 import tkMessageBox
 import model
+from PIL import ImageTk, Image
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 
@@ -11,7 +12,7 @@ class Gui(tk.Frame):
 
     def __init__(self, master):
         # Initialize window using the parent's constructor
-        tk.Frame.__init__(self, master, width=500, height=500)
+        tk.Frame.__init__(self, master, width=1000, height=1000)
         # Set the title
         self.master.title('"K Means Clustering"')
 
@@ -52,7 +53,7 @@ class Gui(tk.Frame):
         self.pre_process.grid(row=3)
 
         # The cluster button
-        self.cluster = tk.Button(self, text='Cluster', command=self.build_model)
+        self.cluster = tk.Button(self, text='Cluster', state='disabled', command=self.build_model)
         self.cluster.grid(row=3, column=1)
 
     def run(self):
@@ -66,6 +67,7 @@ class Gui(tk.Frame):
         try:
             model.pre_process(self.file_path_val)
             tkMessageBox.showinfo("K Means Clustering", "Preprocessing complited successfully")
+            self.cluster['state'] = 'normal'
         except ValueError as ve:
             tkMessageBox.showerror("K Means Clustering", ve.message)
 
@@ -78,23 +80,21 @@ class Gui(tk.Frame):
             if (num_of_clusters < 2):
                 tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 1')
             model.k_means(num_of_clusters, num_of_runs)
-            model.plot_scatter()
-           # model.plot_map()
+            #answer = tkMessageBox.askokcancel("K Means Clustering", 'Clustring complited successfully')
+            scatter_path = model.plot_scatter()
+            #map_path = model.plot_map()
+            self.scatter_img = ImageTk.PhotoImage(Image.open(scatter_path))
+            self.scatter_img_label = tk.Label(self, image=self.scatter_img).pack(side=tk.LEFT)
+            #self.map_img = ImageTk.PhotoImage(Image.open(map_path))
+            #self.map_img_label = tk.Label(self, image=self.map_img).pack(side='bottom', fill='right')
+            #self.map_img.grid(row=4, column=1)
+            #answer = tkMessageBox.showinfo("K Means Clustering", 'Clustring complited successfully')
+            #if(answer):
+             #   self.master.quit()
+            #else:
+             #   self.cluster['state'] = 'disabled'
         except ValueError as ve:
             tkMessageBox.showerror("K Means Clustering", ve.message)
-
-    def add_canvas(self):
-        f = Figure(figsize=(5, 5), dpi=100)
-        a = f.add_subplot(111)
-        a.plot([1, 2, 3, 4, 5, 6, 7, 8], [5, 6, 1, 3, 8, 9, 3, 5])
-
-        canvas = FigureCanvasTkAgg(f, self)
-        canvas.show()
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
-        toolbar = NavigationToolbar2TkAgg(canvas, self)
-        toolbar.update()
-        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 root = tk.Tk()
 app = Gui(root)

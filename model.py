@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import plotly.plotly as py
 
 directory_path = ""
-
 data_after_pre_procsess = pd.DataFrame()
 countries = pd.DataFrame()
 
@@ -73,9 +72,9 @@ def plot_scatter():
     plt.title('K Means Clustering')
     plt.xlabel('Social support')
     plt.ylabel('Generosity')
-    plt.savefig('scatter.png')
-    plt.show()
-
+    path_to_img = directory_path + '/scatter_img.png'
+    plt.savefig(path_to_img)
+    return path_to_img
 
 def plot_map():
 
@@ -113,4 +112,6 @@ def plot_map():
     # Plot
     fig = dict(data=data, layout=layout)
     py.sign_in(username='amitmag', api_key='UzC0vg747jN3LLGYMgJc')
-    py.image.save_as(fig ,filename= directory_path + '/map_img.png')
+    path_to_img = directory_path + '/map_img.png'
+    py.image.save_as(fig ,filename= path_to_img)
+    return path_to_img
