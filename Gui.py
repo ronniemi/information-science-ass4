@@ -2,6 +2,10 @@ import Tkinter as tk
 from tkFileDialog import askopenfilename
 import tkMessageBox
 import model
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+
+
 
 class Gui(tk.Frame):
 
@@ -21,7 +25,7 @@ class Gui(tk.Frame):
         self.file_path_label = tk.Label(self, text='choose file path')
         self.file_path_label.grid(row=0)
 
-        self.file_path = tk.Entry(self)
+        self.file_path = tk.Entry(self, width=50)
         self.file_path.grid(row=0, column=1)
 
         self.brows = tk.Button(self, text='Browse', command=self.brows_file)
@@ -75,9 +79,24 @@ class Gui(tk.Frame):
                 tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 1')
             model.k_means(num_of_clusters, num_of_runs)
             model.plot_scatter()
-            model.plot_map()
+           # model.plot_map()
         except ValueError as ve:
             tkMessageBox.showerror("K Means Clustering", ve.message)
 
-app = Gui(tk.Tk())
+    def add_canvas(self):
+        f = Figure(figsize=(5, 5), dpi=100)
+        a = f.add_subplot(111)
+        a.plot([1, 2, 3, 4, 5, 6, 7, 8], [5, 6, 1, 3, 8, 9, 3, 5])
+
+        canvas = FigureCanvasTkAgg(f, self)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2TkAgg(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+root = tk.Tk()
+app = Gui(root)
+root.geometry("1080x800+200+200")
 app.run()

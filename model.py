@@ -73,7 +73,9 @@ def plot_scatter():
     plt.title('K Means Clustering')
     plt.xlabel('Social support')
     plt.ylabel('Generosity')
+    plt.savefig('scatter.png')
     plt.show()
+
 
 def plot_map():
 
