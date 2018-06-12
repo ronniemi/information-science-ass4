@@ -52,13 +52,25 @@ class Gui(tk.Frame):
         self.cluster = tk.Button(self, text='Cluster', state='disabled', command=self.build_model)
         self.cluster.grid(row=3,column=2)
 
+    '''
+    run main gui
+    @param self gui object
+    '''
     def run(self):
         self.mainloop()
 
+    '''
+    open file chooser in order to choose the require file to load
+    @param self gui object
+    '''
     def brows_file(self):
         self.file_path_val = askopenfilename(title='K Means Clustering', filetypes=[("Excel files", "*.xlsx")])
         self.file_path.insert(0, self.file_path_val)
 
+    '''
+    perform pre process on data
+    @param self gui object
+    '''
     def pre_process(self):
         try:
             model.pre_process(self.file_path_val)
@@ -67,6 +79,11 @@ class Gui(tk.Frame):
         except ValueError as ve:
             tkMessageBox.showerror("K Means Clustering", ve.message)
 
+    '''
+    build k means model according to users parameters.
+    display graphs when finish clustering process
+    @param self gui object
+    '''
     def build_model(self):
         try:
             num_of_runs = self.Num_of_runs_val.get()
