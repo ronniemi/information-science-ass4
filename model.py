@@ -4,6 +4,7 @@ import os.path
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import plotly.plotly as py
+import random
 
 directory_path = ""
 data_after_pre_procsess = pd.DataFrame()
@@ -48,27 +49,27 @@ def pre_process(path):
     directory_path = os.path.abspath(os.path.join(path, os.pardir))
     data_after_pre_procsess = df
 
-    #pre_processed_file_path = directory_path + '/pre_processed_data.csv'
-    #df.to_csv(pre_processed_file_path, index=False)
-
 def k_means(num_of_clusters, num_of_runs):
     global countries
     try:
-        countries = data_after_pre_procsess['country']
-        data_after_pre_procsess.index = data_after_pre_procsess['country']
-        data_after_pre_procsess.drop(['country'], inplace=True, axis=1)
+        if len(countries) == 0:
+            countries = data_after_pre_procsess['country']
+            data_after_pre_procsess.index = data_after_pre_procsess['country']
+            data_after_pre_procsess.drop(['country'], inplace=True, axis=1)
 
-        k_means_model = KMeans(n_clusters=num_of_clusters, init='random', n_init=num_of_runs)
+        k_means_model = KMeans(n_clusters=num_of_clusters, init='random', n_init=num_of_runs, random_state="RandomState")
         k_means_model.fit(data_after_pre_procsess)
 
         data_after_pre_procsess['prediction'] = k_means_model.labels_
     except:
-        raise ValueError('pre processed file not exist')
+        raise ValueError('data not in the right format')
 
 def plot_scatter():
     x = data_after_pre_procsess['Social support']
     y = data_after_pre_procsess['Generosity']
-    plt.scatter(x, y ,c=data_after_pre_procsess['prediction'], alpha=0.5)
+    print(data_after_pre_procsess['prediction'].nunique())
+    colors = ["#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)]) for i in range(data_after_pre_procsess['prediction'].nunique())]
+    plt.scatter(x, y ,c=colors, alpha=1)
     plt.title('K Means Clustering')
     plt.xlabel('Social support')
     plt.ylabel('Generosity')

@@ -3,10 +3,6 @@ from tkFileDialog import askopenfilename
 import tkMessageBox
 import model
 from PIL import ImageTk, Image
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-
-
 
 class Gui(tk.Frame):
 
@@ -77,25 +73,24 @@ class Gui(tk.Frame):
             num_of_clusters = self.Num_of_clusters_val.get()
             if(num_of_runs < 1):
                 tkMessageBox.showerror("K Means Clustering", 'invalid number of runs')
-            if (num_of_clusters < 2):
-                tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 1')
+            if (num_of_clusters < 2 or num_of_clusters > 164):
+                tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 1 ans smaller then 164 (number of recordes)')
             model.k_means(num_of_clusters, num_of_runs)
-            #answer = tkMessageBox.askokcancel("K Means Clustering", 'Clustring complited successfully')
             scatter_path = model.plot_scatter()
             map_path = model.plot_scatter()#model.plot_map()
+            root.geometry("1600x600+200+200")
             self.scatter_img = ImageTk.PhotoImage(Image.open(scatter_path))
-            self.scatter_img_label = tk.Label(self, image=self.scatter_img).grid(row=4,column=1)
+            self.scatter_img_label = tk.Label(self, image=self.scatter_img).grid(row=4,column=0, columnspan=3)
             self.map_img = ImageTk.PhotoImage(Image.open(map_path))
-            self.map_img_label = tk.Label(self, image=self.map_img).grid(row=4,column=3)
-            #answer = tkMessageBox.showinfo("K Means Clustering", 'Clustring complited successfully')
-            #if(answer):
-             #   self.master.quit()
+            self.map_img_label = tk.Label(self, image=self.map_img).grid(row=4,column=3, columnspan=3)
+            answer = tkMessageBox.askokcancel("K Means Clustering", 'Clustring complited successfully, do you want to exit the program?')
+            if(answer):
+               self.master.quit()
             #else:
-             #   self.cluster['state'] = 'disabled'
+             #  self.cluster['state'] = 'disabled'
         except ValueError as ve:
             tkMessageBox.showerror("K Means Clustering", ve.message)
 
 root = tk.Tk()
 app = Gui(root)
-root.geometry("1080x800+200+200")
 app.run()
