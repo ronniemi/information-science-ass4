@@ -73,11 +73,13 @@ class Gui(tk.Frame):
             num_of_clusters = self.Num_of_clusters_val.get()
             if(num_of_runs < 1):
                 tkMessageBox.showerror("K Means Clustering", 'invalid number of runs')
+                return
             if (num_of_clusters < 2 or num_of_clusters > 164):
-                tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 1 ans smaller then 164 (number of recordes)')
+                tkMessageBox.showerror("K Means Clustering", 'number of cluster have to be grater then 1 and smaller then 164 (number of recordes)')
+                return
             model.k_means(num_of_clusters, num_of_runs)
             scatter_path = model.plot_scatter()
-            map_path = model.plot_scatter()#model.plot_map()
+            map_path = model.plot_map()
             root.geometry("1600x600+200+200")
             self.scatter_img = ImageTk.PhotoImage(Image.open(scatter_path))
             self.scatter_img_label = tk.Label(self, image=self.scatter_img).grid(row=4,column=0, columnspan=3)
@@ -86,8 +88,6 @@ class Gui(tk.Frame):
             answer = tkMessageBox.askokcancel("K Means Clustering", 'Clustring complited successfully, do you want to exit the program?')
             if(answer):
                self.master.quit()
-            #else:
-             #  self.cluster['state'] = 'disabled'
         except ValueError as ve:
             tkMessageBox.showerror("K Means Clustering", ve.message)
 

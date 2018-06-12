@@ -42,22 +42,24 @@ def clean_data(df):
 def pre_process(path):
     global directory_path
     global data_after_pre_procsess
+    global countries
 
     df = read_file(path)
     df = clean_data(df)
+
+    countries = df['country']
+    df.index = df['country']
+    df.drop(['country'], inplace=True, axis=1)
 
     directory_path = os.path.abspath(os.path.join(path, os.pardir))
     data_after_pre_procsess = df
 
 def k_means(num_of_clusters, num_of_runs):
-    global countries
     try:
-        if len(countries) == 0:
-            countries = data_after_pre_procsess['country']
-            data_after_pre_procsess.index = data_after_pre_procsess['country']
-            data_after_pre_procsess.drop(['country'], inplace=True, axis=1)
+        if 'prediction' in data_after_pre_procsess.columns:
+            data_after_pre_procsess.drop(['prediction'], inplace=True, axis=1)
 
-        k_means_model = KMeans(n_clusters=num_of_clusters, init='random', n_init=num_of_runs, random_state="RandomState")
+        k_means_model = KMeans(n_clusters=num_of_clusters, init='random', n_init=num_of_runs)
         k_means_model.fit(data_after_pre_procsess)
 
         data_after_pre_procsess['prediction'] = k_means_model.labels_
@@ -67,10 +69,9 @@ def k_means(num_of_clusters, num_of_runs):
 def plot_scatter():
     x = data_after_pre_procsess['Social support']
     y = data_after_pre_procsess['Generosity']
-    print(data_after_pre_procsess['prediction'].nunique())
     colors = ["#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)]) for i in range(data_after_pre_procsess['prediction'].nunique())]
     plt.scatter(x, y ,c=colors, alpha=1)
-    plt.title('K Means Clustering')
+    plt.title('K Means Clsustering')
     plt.xlabel('Social support')
     plt.ylabel('Generosity')
     path_to_img = directory_path + '/scatter_img.png'
