@@ -10,6 +10,11 @@ directory_path = ""
 data_after_pre_procsess = pd.DataFrame()
 countries = pd.DataFrame()
 
+'''
+read excel file and insert the data into dataFrame
+@:param path path for data file
+@:return dataFrame of data without the column year
+'''
 def read_file(path):
     df = pd.read_excel(path)
     if len(df) < 1:
@@ -17,28 +22,49 @@ def read_file(path):
     df.drop(['year'], inplace=True, axis=1)
     return df
 
-# complete missing values
+'''
+complete missing values according to column mean value
+@:param dataFrame with data
+'''
 def replace_na(df):
     for column in df:
         if df[column].dtype == 'float64':
             df[column].fillna((df[column].mean()), inplace=True)
 
+'''
+for each numeric column, change the value into the standard value
+@:param dataFrame with data
+'''
 #Standardization
 def standardization(df):
     for column in df:
         if df[column].dtype == 'float64':
             preprocessing.scale(df[column], axis=0, with_mean=True, with_std=True, copy=False)
 
+'''
+create new dataframe containing for each country the avg values of the country
+@:param df dataFrame with data
+@:return dataFrame after group by
+'''
 def data_grouping(df):
     return df.groupby('country', as_index=False).agg('mean')
 
 
+'''
+replace empty values, change values to standad values and group by
+@:param df dataFrame with data
+@:return dataFrame after cleaning the data
+'''
 def clean_data(df):
     replace_na(df)
     standardization(df)
     df = data_grouping(df)
     return df
 
+'''
+preform pre process on data
+@:param path path for data file
+'''
 def pre_process(path):
     global directory_path
     global data_after_pre_procsess
@@ -54,6 +80,12 @@ def pre_process(path):
     directory_path = os.path.abspath(os.path.join(path, os.pardir))
     data_after_pre_procsess = df
 
+
+'''
+run k mean model on data according to user parameters
+@:param num_of_clusters number of clusters according to user
+@:param num_of_runs number of runs according to user
+'''
 def k_means(num_of_clusters, num_of_runs):
     try:
         if 'prediction' in data_after_pre_procsess.columns:
@@ -66,6 +98,11 @@ def k_means(num_of_clusters, num_of_runs):
     except:
         raise ValueError('data not in the right format')
 
+'''
+plot scatter graph of Generosity as a function of Social support.
+save image of the graph in the chosen folder
+@return path of the image
+'''
 def plot_scatter():
     x = data_after_pre_procsess['Social support']
     y = data_after_pre_procsess['Generosity']
@@ -78,6 +115,11 @@ def plot_scatter():
     plt.savefig(path_to_img)
     return path_to_img
 
+'''
+plot choropleth graph according to records classification.
+save image of the graph in the chosen folder
+@return path of the image
+'''
 def plot_map():
 
     # Define the data to be visualised and some of the parameters of the visualisation
